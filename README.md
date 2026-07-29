@@ -63,9 +63,19 @@ El proyecto está configurado para desplegarse automáticamente en GitHub Pages:
 
 ---
 
-## 🔐 Seguridad y Privacidad (100% Client-Side)
+## 🔐 Seguridad, Privacidad y Modelo de Amenazas (100% Client-Side)
 
 TuxPass opera **100% Client-Side**. No utiliza servidores backend, bases de datos remotas ni analíticas de terceros. Toda la entropía se obtiene directamente del motor criptográfico del hardware/navegador mediante la API W3C Web Crypto. Tus claves y credenciales jamás salen de tu computadora.
+
+### 🛡️ ¿Qué ocurre en caso de un hackeo del equipo / malware?
+
+1. **Datos almacenados (En Reposo): PROTEGIDOS (AES-256-GCM + PBKDF2)**
+   - Si un atacante o troyano copia los archivos de tu computadora (o la base de datos de la bóveda), **no podrá ver tus contraseñas**.
+   - Toda la bóveda está cifrada con algoritmos criptográficos estándar de la industria. Sin tu **Contraseña Maestra**, la información es un bloque indescifrable de caracteres.
+
+2. **Malware activo en memoria / Keyloggers (En Tiempo Real): RIESGO GENERAL**
+   - Si tu PC tiene un *Keylogger* o *Infostealer* activo en el sistema operativo registrando tus pulsaciones de teclado mientras escribes tu Contraseña Maestra, el malware podría capturar las teclas ingresadas.
+   - **Nota de seguridad:** Este es un riesgo inherente a **cualquier** gestor de contraseñas (KeePass, Bitwarden, 1Password, etc.) cuando el sistema operativo anfitrión está comprometido.
 
 ---
 
