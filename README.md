@@ -6,7 +6,7 @@
 ![Web Crypto API](https://img.shields.io/badge/Security-CSPRNG%20Standard-success.svg)
 ![Platform](https://img.shields.io/badge/Platform-Desktop%20%2F%20Web-orange.svg)
 
-> **TuxPass** es un gestor de contraseñas y generador criptográfico de alta seguridad con estética de terminal Linux. Funciona de manera **100% privada, local y fuera de línea (Client-Side)** tanto como aplicación de escritorio (Electron) como sitio web desplegable en GitHub Pages.
+> **TuxPass** es un gestor de contraseñas y generador criptográfico de alta seguridad con estética de terminal Linux. Funciona de manera **100% privada, local y fuera de línea (Client-Side)** como aplicación de escritorio local.
 
 ---
 
@@ -45,9 +45,9 @@ TuxPass/
 
 ---
 
-## ⚡ Instalación y Uso
+## ⚡ Instalación y Uso Local
 
-### 1. Ejecutar como Aplicación de Escritorio
+### Ejecutar como Aplicación de Escritorio
 ```bash
 # Instalar dependencias
 npm install
@@ -55,11 +55,7 @@ npm install
 # Iniciar la aplicación
 npm start
 ```
-
-### 2. Despliegue en GitHub Pages (Web)
-El proyecto está configurado para desplegarse automáticamente en GitHub Pages:
-- Repositorio: `https://github.com/savage777js/-TuxPass`
-- URL de la Web: `https://savage777js.github.io/-TuxPass/`
+O ejecutando el acceso directo `Iniciar_TuxPass.bat` en Windows.
 
 ---
 
