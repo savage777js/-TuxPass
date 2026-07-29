@@ -1,6 +1,6 @@
 # 🐧 TuxPass - Linux Style Password Manager & Vault
 
-![License](https://img.shields.io/badge/License-MIT-blue.svg)
+![Copyright](https://img.shields.io/badge/Copyright-All%20Rights%20Reserved-red.svg)
 ![Build](https://img.shields.io/badge/Build-Passing-brightgreen.svg)
 ![Distro Themes](https://img.shields.io/badge/Themes-Arch%20%7C%20Kali%20%7C%20Ubuntu%20%7C%20Matrix%20%7C%20Dracula%20%7C%20Retro-cyan.svg)
 ![Web Crypto API](https://img.shields.io/badge/Security-CSPRNG%20Standard-success.svg)
@@ -79,6 +79,6 @@ TuxPass opera **100% Client-Side**. No utiliza servidores backend, bases de dato
 
 ---
 
-## 📜 Licencia
+## 🔒 Propiedad y Licencia
 
-Desarrollado bajo la licencia [MIT](LICENSE). Libre para usar, modificar y compartir en tu perfil de GitHub.
+© Todos los derechos reservados. Este código fuente es de carácter privado/propietario (**savage777js**) y está publicado únicamente para fines de visualización e inspección pública. No se autoriza su uso comercial, copia, modificación o redistribución sin la autorización expresa del autor.
