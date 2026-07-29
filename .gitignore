@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Build & Compiled Executables
+dist/
+TuxPass_Boveda_Segura-win32-x64/
+out/
+*.exe
+*.AppImage
+*.dmg
+*.deb
+
+# Personal Backups & Vault Exports
+*.tuxvault
+*.json_backup
+
+# System & Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log

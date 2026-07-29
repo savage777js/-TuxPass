@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TuxPass // Linux Style Password Manager & Vault</title>
+    <meta name="description" content="Gestor y Bóveda Segura de Contraseñas Privada con Encriptación AES-256 local para Windows. Estilo Linux Terminal.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=JetBrains+Mono:ital,wght@0,300;0,400;0,600;0,800;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="icon.ico">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-arch">
+    <div class="background-grid"></div>
+    <div class="scanline"></div>
+
+    <div class="app-container">
+        <!-- Top Linux Header Bar -->
+        <header class="top-bar">
+            <div class="distro-brand">
+                <img src="icon.png" alt="TuxPass Logo" class="brand-logo-img">
+                <span class="brand-name">TuxPass Bóveda Segura <span class="version">v2.5.0-desktop</span></span>
+            </div>
+            
+            <div class="top-bar-center">
+                <div class="theme-selector">
+                    <label><i class="fa-solid fa-palette"></i> Distro Theme:</label>
+                    <select id="themeSelect">
+                        <option value="theme-arch" selected>Arch Linux (Cyan/Blue)</option>
+                        <option value="theme-kali">Kali Linux (Cyber Red/Dragon)</option>
+                        <option value="theme-ubuntu">Ubuntu (Yaru Orange/Purple)</option>
+                        <option value="theme-matrix">Matrix Terminal (Green Neon)</option>
+                        <option value="theme-dracula">Dracula Dark (Purple/Pastel)</option>
+                        <option value="theme-retro">Amber Retro CRT (Gold)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="system-status">
+                <span class="status-badge status-secure" id="vaultLockStatus"><i class="fa-solid fa-lock"></i> Bóveda Encriptada</span>
+                <span class="status-time" id="systemClock">00:00:00</span>
+            </div>
+        </header>
+
+        <!-- Main Window Container -->
+        <main class="window-frame">
+            <!-- Window Title Bar -->
+            <div class="window-titlebar">
+                <div class="window-controls">
+                    <span class="control-btn btn-close" title="Cerrar"><i class="fa-solid fa-xmark"></i></span>
+                    <span class="control-btn btn-minimize" title="Minimizar"><i class="fa-solid fa-minus"></i></span>
+                    <span class="control-btn btn-maximize" title="Maximizar"><i class="fa-solid fa-expand"></i></span>
+                </div>
+                <div class="window-title">
+                    <i class="fa-solid fa-terminal"></i> user@tuxpass-workstation: ~/sec-tools/vault-manager
+                </div>
+                <div class="mode-switcher">
+                    <button class="mode-btn active" id="tabVaultBtn" data-tab="vault"><i class="fa-solid fa-vault"></i> Mi Bóveda</button>
+                    <button class="mode-btn" id="tabGuiBtn" data-tab="gui"><i class="fa-solid fa-sliders"></i> Generador</button>
+                </div>
+            </div>
+
+            <!-- Window Content Area -->
+            <div class="window-content">
+
+                <!-- MAIN DISPLAY OUTPUT AREA -->
+                <section class="display-card">
+                    <div class="terminal-banner">
+                        <span class="prompt-user">tux@arch-desktop</span>:<span class="prompt-path">~/passgen</span>$ <span class="prompt-cmd">generate --secure --entropy-max</span>
+                    </div>
+
+                    <div class="output-wrapper">
+                        <div class="generated-password-field" id="passwordOutput" title="Haga clic para copiar">
+                            <span class="placeholder-text">Generando contraseña segura...</span>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button id="btnCopy" class="btn btn-primary" title="Copiar al portapapeles">
+                                <i class="fa-regular fa-copy"></i> Copiar
+                            </button>
+                            <button id="btnGenerate" class="btn btn-accent" title="Generar nueva contraseña">
+                                <i class="fa-solid fa-rotate-right"></i> Generar
+                            </button>
+                            <button id="btnSaveToVaultQuick" class="btn btn-secondary" title="Guardar esta contraseña en mi Bóveda">
+                                <i class="fa-solid fa-folder-plus"></i> Guardar en Bóveda
+                            </button>
+                            <button id="btnToggleVisibility" class="btn btn-icon" title="Mostrar / Ocultar">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                            <button id="btnAudioToggle" class="btn btn-icon" title="Sonido FX">
+                                <i class="fa-solid fa-volume-high"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Security & Strength Meter -->
+                    <div class="strength-container">
+                        <div class="strength-header">
+                            <span class="strength-label">Fuerza: <strong id="strengthText">Excelente</strong></span>
+                            <span class="entropy-label">Entropía: <strong id="entropyVal">0 bits</strong></span>
+                            <span class="crack-time">Tiempo de descifrado: <strong id="crackTimeVal">Instantáneo</strong></span>
+                        </div>
+                        <div class="meter-bar-track">
+                            <div class="meter-bar-fill" id="meterFill" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB 0: ENCRYPTED VAULT (MI BÓVEDA SEVERA) -->
+                <section id="tab-vault" class="tab-pane active">
+                    <div class="vault-wrapper">
+                        <!-- Vault Controls Header -->
+                        <div class="vault-toolbar">
+                            <div class="vault-search-box">
+                                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                                <input type="text" id="vaultSearchInput" class="input-linux" placeholder="Buscar cuenta, servicio o usuario (ej: Gmail, Facebook, Banco)...">
+                            </div>
+                            <div class="vault-actions">
+                                <select id="vaultCategoryFilter" class="input-linux short-select">
+                                    <option value="ALL">Todas las Categorías</option>
+                                    <option value="Personal">Personal</option>
+                                    <option value="Trabajo">Trabajo</option>
+                                    <option value="Bancos">Bancos / Financiero</option>
+                                    <option value="Social">Redes Sociales</option>
+                                    <option value="Otros">Otros</option>
+                                </select>
+                                <button id="btnAddNewAccount" class="btn btn-accent"><i class="fa-solid fa-plus"></i> Nueva Cuenta</button>
+                                <button id="btnLockVault" class="btn btn-secondary" title="Bloquear Bóveda"><i class="fa-solid fa-lock"></i> Bloquear</button>
+                                <button id="btnExportVault" class="btn btn-icon" title="Respaldar Bóveda (.tuxvault)"><i class="fa-solid fa-download"></i></button>
+                                <button id="btnImportVault" class="btn btn-icon" title="Restaurar Respaldo (.tuxvault)"><i class="fa-solid fa-upload"></i></button>
+                                <input type="file" id="vaultFileInput" accept=".tuxvault,.json" style="display: none;">
+                            </div>
+                        </div>
+
+                        <!-- Stats Bar -->
+                        <div class="vault-stats-bar">
+                            <span><i class="fa-solid fa-key"></i> Total Cuentas Guardadas: <strong id="statTotalAccounts">0</strong></span>
+                            <span><i class="fa-solid fa-shield-halved"></i> Encriptación: <strong>AES-256-GCM (Local)</strong></span>
+                            <span><i class="fa-solid fa-triangle-exclamation"></i> Sugerencias de actualización: <strong id="statOldPasswords" class="t-yellow">0</strong></span>
+                        </div>
+
+                        <!-- Vault Accounts Grid / List -->
+                        <div class="vault-list-container">
+                            <div class="vault-table-header">
+                                <span class="col-service">Servicio / Sitio</span>
+                                <span class="col-user">Usuario / Email</span>
+                                <span class="col-pass">Contraseña</span>
+                                <span class="col-cat">Categoría</span>
+                                <span class="col-date">Último Cambio</span>
+                                <span class="col-actions">Acciones</span>
+                            </div>
+                            <div class="vault-table-body" id="vaultTableBody">
+                                <div class="empty-vault-msg">
+                                    <i class="fa-solid fa-vault empty-icon"></i>
+                                    <p>Tu bóveda local está vacía.</p>
+                                    <small>Haz clic en <strong>"Nueva Cuenta"</strong> o en <strong>"Guardar en Bóveda"</strong> para guardar tus contraseñas personales de forma segura.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB 1: GUI CONFIGURATOR -->
+                <section id="tab-gui" class="tab-pane">
+                    <div class="grid-2col">
+                        <!-- Left Panel: Character Sets & Length -->
+                        <div class="panel-box">
+                            <h3 class="panel-title"><i class="fa-solid fa-sliders"></i> Parámetros de Generación</h3>
+                            
+                            <!-- Length Slider -->
+                            <div class="control-group">
+                                <div class="label-row">
+                                    <label for="lengthSlider">Longitud de Contraseña:</label>
+                                    <span class="value-badge" id="lengthVal">18</span>
+                                </div>
+                                <div class="slider-row">
+                                    <input type="range" id="lengthSlider" min="4" max="128" value="18">
+                                    <div class="quick-preset-btns">
+                                        <button class="btn-chip" data-length="12">12</button>
+                                        <button class="btn-chip" data-length="16">16</button>
+                                        <button class="btn-chip" data-length="24">24</button>
+                                        <button class="btn-chip" data-length="32">32</button>
+                                        <button class="btn-chip" data-length="64">64</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Mode Selector -->
+                            <div class="control-group">
+                                <label><i class="fa-solid fa-cubes"></i> Algoritmo de Generación:</label>
+                                <div class="radio-tiles">
+                                    <label class="tile-option">
+                                        <input type="radio" name="genType" value="random" checked>
+                                        <div class="tile-content">
+                                            <i class="fa-solid fa-random"></i>
+                                            <span>Aleatorio Seguro</span>
+                                        </div>
+                                    </label>
+                                    <label class="tile-option">
+                                        <input type="radio" name="genType" value="passphrase">
+                                        <div class="tile-content">
+                                            <i class="fa-solid fa-font"></i>
+                                            <span>Diceware / Frase</span>
+                                        </div>
+                                    </label>
+                                    <label class="tile-option">
+                                        <input type="radio" name="genType" value="pronounceable">
+                                        <div class="tile-content">
+                                            <i class="fa-solid fa-comment-dots"></i>
+                                            <span>Pronunciable</span>
+                                        </div>
+                                    </label>
+                                    <label class="tile-option">
+                                        <input type="radio" name="genType" value="pin">
+                                        <div class="tile-content">
+                                            <i class="fa-solid fa-calculator"></i>
+                                            <span>PIN / Hex</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Checkbox switches -->
+                            <div class="checkbox-grid" id="charCheckboxes">
+                                <label class="switch-card">
+                                    <input type="checkbox" id="chkUpper" checked>
+                                    <span class="switch-indicator"></span>
+                                    <span class="switch-label">Mayúsculas (A-Z)</span>
+                                </label>
+                                <label class="switch-card">
+                                    <input type="checkbox" id="chkLower" checked>
+                                    <span class="switch-indicator"></span>
+                                    <span class="switch-label">Minúsculas (a-z)</span>
+                                </label>
+                                <label class="switch-card">
+                                    <input type="checkbox" id="chkNumbers" checked>
+                                    <span class="switch-indicator"></span>
+                                    <span class="switch-label">Números (0-9)</span>
+                                </label>
+                                <label class="switch-card">
+                                    <input type="checkbox" id="chkSymbols" checked>
+                                    <span class="switch-indicator"></span>
+                                    <span class="switch-label">Símbolos (@#$%^&*)</span>
+                                </label>
+                                <label class="switch-card">
+                                    <input type="checkbox" id="chkAmbiguous">
+                                    <span class="switch-indicator"></span>
+                                    <span class="switch-label">Excluir Ambiguos (1,l,I,0,O)</span>
+                                </label>
+                                <label class="switch-card">
+                                    <input type="checkbox" id="chkStrict">
+                                    <span class="switch-indicator"></span>
+                                    <span class="switch-label">Garantizar cada conjunto activo</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Right Panel: Custom Rules & NATO Phonetics -->
+                        <div class="panel-box">
+                            <h3 class="panel-title"><i class="fa-solid fa-wand-magic-sparkles"></i> Ajustes Avanzados & Fonética</h3>
+                            
+                            <div class="control-group">
+                                <label for="customSymbols">Símbolos Personalizados:</label>
+                                <input type="text" id="customSymbols" class="input-linux" value="!@#$%^&*()_+-=[]{}|;:,.<>?">
+                            </div>
+
+                            <!-- Passphrase specific option -->
+                            <div class="control-group hidden-panel" id="passphraseOptions">
+                                <div class="label-row">
+                                    <label for="wordCountSlider">Número de Palabras:</label>
+                                    <span class="value-badge" id="wordCountVal">4</span>
+                                </div>
+                                <input type="range" id="wordCountSlider" min="3" max="10" value="4">
+                                <div class="separator-select">
+                                    <label>Separador:</label>
+                                    <select id="passphraseSeparator" class="input-linux">
+                                        <option value="-">Guión (-)</option>
+                                        <option value="_">Guión bajo (_)</option>
+                                        <option value=".">Punto (.)</option>
+                                        <option value=" ">Espacio ( )</option>
+                                        <option value="#">Numeral (#)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Phonetic Breakdown View -->
+                            <div class="phonetic-card">
+                                <div class="phonetic-title"><i class="fa-solid fa-volume-low"></i> Desglose Fonético NATO / Lectura:</div>
+                                <div class="phonetic-words" id="phoneticOutput">
+                                    <em>Seleccione una contraseña para ver su pronunciación fonética.</em>
+                                </div>
+                            </div>
+
+                            <!-- History preview -->
+                            <div class="history-section">
+                                <div class="history-header">
+                                    <span><i class="fa-solid fa-clock-rotate-left"></i> Historial Reciente</span>
+                                    <button class="btn-text" id="btnClearHistory">Limpiar</button>
+                                </div>
+                                <ul class="history-list" id="historyList">
+                                    <li class="empty-history">No hay contraseñas guardadas aún.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- Footer / Statusbar -->
+            <footer class="window-statusbar">
+                <div class="status-left">
+                    <span><i class="fa-solid fa-shield"></i> Encriptación: AES-GCM 256</span>
+                    <span><i class="fa-solid fa-database"></i> Almacenamiento: Local Seguro</span>
+                    <span><i class="fa-solid fa-lock"></i> Web Crypto API</span>
+                </div>
+                <div class="status-right">
+                    <span>TuxPass Offline Desktop v2.5</span>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <!-- MODAL 1: NUEVA / EDITAR CUENTA EN BÓVEDA -->
+    <div id="accountModal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="modalTitle"><i class="fa-solid fa-folder-plus"></i> Guardar Cuenta en Bóveda</h3>
+                <button class="btn-icon-sm" id="btnCloseAccountModal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="accountForm" class="modal-body">
+                <input type="hidden" id="accEditId">
+                <div class="control-group">
+                    <label for="accService">Nombre del Servicio o Aplicación *:</label>
+                    <input type="text" id="accService" class="input-linux" placeholder="ej: Gmail, Facebook, Banco Estado, Wi-Fi Casa" required>
+                </div>
+                <div class="control-group">
+                    <label for="accUsername">Usuario, Email o Identificador:</label>
+                    <input type="text" id="accUsername" class="input-linux" placeholder="ej: mi_correo@gmail.com / mi_usuario">
+                </div>
+                <div class="control-group">
+                    <label for="accPassword">Contraseña *:</label>
+                    <div class="input-with-btn">
+                        <input type="text" id="accPassword" class="input-linux" placeholder="Contraseña de esta cuenta" required>
+                        <button type="button" id="btnFillGeneratedPass" class="btn btn-secondary" title="Usar la contraseña recién generada arriba">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Usar Generada
+                        </button>
+                    </div>
+                </div>
+                <div class="grid-2col">
+                    <div class="control-group">
+                        <label for="accCategory">Categoría:</label>
+                        <select id="accCategory" class="input-linux">
+                            <option value="Personal">Personal</option>
+                            <option value="Trabajo">Trabajo</option>
+                            <option value="Bancos">Bancos / Financiero</option>
+                            <option value="Social">Redes Sociales</option>
+                            <option value="Otros">Otros</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label for="accUrl">Sitio Web / Notas:</label>
+                        <input type="text" id="accUrl" class="input-linux" placeholder="https://ejemplo.com o notas">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btnCancelAccountModal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Guardar Registro</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 2: MASTER PASSWORD UNLOCK / SET -->
+    <div id="masterLockModal" class="modal-overlay hidden">
+        <div class="modal-card master-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-user-shield"></i> Desbloquear Bóveda TuxPass</h3>
+            </div>
+            <div class="modal-body">
+                <p class="master-desc">Ingresa tu <strong>Contraseña Maestra</strong> para desencriptar tus contraseñas personales guardadas localmente.</p>
+                <div class="control-group">
+                    <label for="masterPassInput">Contraseña Maestra:</label>
+                    <input type="password" id="masterPassInput" class="input-linux" placeholder="••••••••••••" autofocus>
+                </div>
+                <div id="masterErrorMsg" class="error-msg hidden">Contraseña maestra incorrecta. Inténtalo de nuevo.</div>
+            </div>
+            <div class="modal-footer">
+                <button id="btnUnlockVault" class="btn btn-primary btn-full"><i class="fa-solid fa-key"></i> Desbloquear Bóveda</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toastNotification" class="toast hidden">
+        <i class="fa-solid fa-circle-check"></i> <span id="toastMsg">Contraseña copiada al portapapeles</span>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

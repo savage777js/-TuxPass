@@ -1,0 +1,41 @@
+{
+  "name": "tuxpass-vault",
+  "version": "2.5.0",
+  "description": "Bóveda y Generador de Contraseñas Seguro Estilo Linux para Windows",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win portable"
+  },
+  "keywords": [
+    "password-generator",
+    "password-manager",
+    "security",
+    "linux-terminal",
+    "vault",
+    "aes-256"
+  ],
+  "author": "Antigravity",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.tuxpass.vault",
+    "productName": "TuxPass Bóveda Segura",
+    "win": {
+      "target": "portable",
+      "icon": "icon.ico"
+    },
+    "portable": {
+      "artifactName": "TuxPass_Bovida_Segura.exe"
+    },
+    "files": [
+      "index.html",
+      "style.css",
+      "script.js",
+      "main.js"
+    ]
+  }
+}
