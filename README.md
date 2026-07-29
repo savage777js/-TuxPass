@@ -47,17 +47,13 @@ También es posible iniciar la aplicación mediante el script `Iniciar_TuxPass.b
 
 ---
 
-## Seguridad y Modelo de Amenazas
+## Arquitectura de Seguridad y Privacidad
 
 TuxPass opera de manera 100% local (Client-Side). No requiere servidores externos, conexiones a internet ni herramientas de telemetría o analíticas.
 
-### Comportamiento ante incidentes de seguridad:
-
-1. **Datos en reposo (Bóveda almacenada):**
-   Los datos guardados están cifrados mediante AES-256-GCM. Si un tercero obtiene acceso físico o copia la base de datos local, no podrá leer la información sin la Contraseña Maestra.
-
-2. **Malware activo en el sistema (Keyloggers):**
-   Si el sistema operativo anfitrión se encuentra infectado por un capturador de teclado o un infostealer activo durante el uso de la aplicación, las credenciales introducidas podrían ser interceptadas. Este es un riesgo común a cualquier software ejecutado en un entorno desprotegido.
+- **Cifrado Fuerte (AES-256-GCM):** Toda la información de la bóveda se almacena cifrada localmente en el dispositivo.
+- **Derivación de Clave (PBKDF2):** Las claves se derivan de la Contraseña Maestra utilizando algoritmos de derivación robustos para proteger la integridad de los datos.
+- **Zero-Knowledge Local:** Las credenciales y llaves generadas nunca abandonan la memoria local ni el entorno de la aplicación.
 
 ---
 
