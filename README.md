@@ -1,80 +1,66 @@
-# 🐧 TuxPass - Linux Style Password Manager & Vault
+# TuxPass - Gestor de Contraseñas y Generador de Escritorio
 
-![Copyright](https://img.shields.io/badge/Copyright-All%20Rights%20Reserved-red.svg)
-![Build](https://img.shields.io/badge/Build-Passing-brightgreen.svg)
-![Distro Themes](https://img.shields.io/badge/Themes-Arch%20%7C%20Kali%20%7C%20Ubuntu%20%7C%20Matrix%20%7C%20Dracula%20%7C%20Retro-cyan.svg)
-![Web Crypto API](https://img.shields.io/badge/Security-CSPRNG%20Standard-success.svg)
-![Platform](https://img.shields.io/badge/Platform-Desktop%20%2F%20Web-orange.svg)
-
-> **TuxPass** es un gestor de contraseñas y generador criptográfico de alta seguridad con estética de terminal Linux. Funciona de manera **100% privada, local y fuera de línea (Client-Side)** como aplicación de escritorio local.
+TuxPass es una aplicación de escritorio local diseñada para la generación y gestión segura de contraseñas con interfaz inspirada en terminales de distribuciones Linux. Funciona de forma totalmente fuera de línea (Client-Side), garantizando la privacidad de los datos en el equipo del usuario.
 
 ---
 
-## 🚀 Características Destacadas
+## Características
 
-- 🛡️ **Seguridad Criptográfica (CSPRNG):** Generación aleatoria mediante la API nativa `window.crypto.getRandomValues`.
-- 🔐 **Bóveda de Contraseñas Encriptada (Mi Bóveda):** Almacenamiento local seguro cifrado con AES-256 y PBKDF2. Tus contraseñas guardadas nunca salen de tu dispositivo.
-- 🎨 **Estética Linux & Temas Distro:**
-  - **Arch Linux:** Neón cian y azul metálico.
-  - **Kali Linux:** Cyberpunk magenta/rojo táctico.
-  - **Ubuntu:** Púrpura Yaru y naranja característico.
-  - **Matrix Terminal:** Verde fósforo hacker.
-  - **Dracula Dark:** Tonos oscuros y colores pastel.
-  - **Amber Retro CRT:** Monitor fósforo ámbar vintage.
-- 🎛️ **Modos de Generación Avanzados:**
-  - **Aleatorio Personalizado:** Mayúsculas, minúsculas, números, símbolos y exclusión de caracteres ambiguos (`1,l,I,0,O`).
-  - **Frases de Paso (Diceware):** Palabras legibles en español e inglés unidas por separadores configurables.
-- 💻 **Versión Portable de Escritorio:** Ejecutable autónomo para Windows empacado con Electron.
-- 📻 **Desglose Fonético NATO:** Lectura fonética oficial en tiempo real para dictado seguro sin errores.
+- **Generación Criptográfica:** Generación de aleatoriedad mediante la API nativa `window.crypto.getRandomValues` (CSPRNG).
+- **Bóveda Encriptada:** Almacenamiento local protegido con cifrado AES-256-GCM y derivación de clave PBKDF2.
+- **Temas Visuales Linux:** Personalización con estéticas de Arch, Kali, Ubuntu, Matrix, Dracula y CRT Retro.
+- **Modos de Generación:** Soporte para contraseñas aleatorias avanzadas y frases de paso (Diceware).
+- **Lectura Fonética NATO:** Desglose en tiempo real para dictado por voz o radio.
+- **Aplicación Portable:** Ejecutable autónomo para Windows empaquetado con Electron.
 
 ---
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```text
 TuxPass/
-├── main.js                   # Proceso principal de Electron (Escritorio)
-├── index.html                # Interfaz principal (Bóveda y Generador)
-├── style.css                 # Estilos Linux, variables CSS y animaciones
-├── script.js                 # Lógica criptográfica (WebCrypto, AES-256)
-├── Iniciar_TuxPass.bat       # Acceso directo para ejecutar la app
+├── main.js                   # Proceso principal de Electron
+├── index.html                # Interfaz de usuario (Bóveda y Generador)
+├── style.css                 # Estilos y temas visuales
+├── script.js                 # Lógica de cifrado y generación
+├── Iniciar_TuxPass.bat       # Lanzador directo para Windows
 ├── Ejecutar_Boveda_TuxPass.bat
-├── README.md                 # Documentación oficial
-└── package.json              # Configuración y dependencias de Electron
+├── README.md                 # Documentación
+└── package.json              # Configuración y dependencias
 ```
 
 ---
 
-## ⚡ Instalación y Uso Local
+## Uso Local
 
-### Ejecutar como Aplicación de Escritorio
+Para ejecutar la aplicación en entorno de desarrollo o prueba:
+
 ```bash
 # Instalar dependencias
 npm install
 
-# Iniciar la aplicación
+# Iniciar aplicación
 npm start
 ```
-O ejecutando el acceso directo `Iniciar_TuxPass.bat` en Windows.
+
+También es posible iniciar la aplicación mediante el script `Iniciar_TuxPass.bat`.
 
 ---
 
-## 🔐 Seguridad, Privacidad y Modelo de Amenazas (100% Client-Side)
+## Seguridad y Modelo de Amenazas
 
-TuxPass opera **100% Client-Side**. No utiliza servidores backend, bases de datos remotas ni analíticas de terceros. Toda la entropía se obtiene directamente del motor criptográfico del hardware/navegador mediante la API W3C Web Crypto. Tus claves y credenciales jamás salen de tu computadora.
+TuxPass opera de manera 100% local (Client-Side). No requiere servidores externos, conexiones a internet ni herramientas de telemetría o analíticas.
 
-### 🛡️ ¿Qué ocurre en caso de un hackeo del equipo / malware?
+### Comportamiento ante incidentes de seguridad:
 
-1. **Datos almacenados (En Reposo): PROTEGIDOS (AES-256-GCM + PBKDF2)**
-   - Si un atacante o troyano copia los archivos de tu computadora (o la base de datos de la bóveda), **no podrá ver tus contraseñas**.
-   - Toda la bóveda está cifrada con algoritmos criptográficos estándar de la industria. Sin tu **Contraseña Maestra**, la información es un bloque indescifrable de caracteres.
+1. **Datos en reposo (Bóveda almacenada):**
+   Los datos guardados están cifrados mediante AES-256-GCM. Si un tercero obtiene acceso físico o copia la base de datos local, no podrá leer la información sin la Contraseña Maestra.
 
-2. **Malware activo en memoria / Keyloggers (En Tiempo Real): RIESGO GENERAL**
-   - Si tu PC tiene un *Keylogger* o *Infostealer* activo en el sistema operativo registrando tus pulsaciones de teclado mientras escribes tu Contraseña Maestra, el malware podría capturar las teclas ingresadas.
-   - **Nota de seguridad:** Este es un riesgo inherente a **cualquier** gestor de contraseñas (KeePass, Bitwarden, 1Password, etc.) cuando el sistema operativo anfitrión está comprometido.
+2. **Malware activo en el sistema (Keyloggers):**
+   Si el sistema operativo anfitrión se encuentra infectado por un capturador de teclado o un infostealer activo durante el uso de la aplicación, las credenciales introducidas podrían ser interceptadas. Este es un riesgo común a cualquier software ejecutado en un entorno desprotegido.
 
 ---
 
-## 🔒 Propiedad y Licencia
+## Propiedad y Licencia
 
-© Todos los derechos reservados. Este código fuente es de carácter privado/propietario (**savage777js**) y está publicado únicamente para fines de visualización e inspección pública. No se autoriza su uso comercial, copia, modificación o redistribución sin la autorización expresa del autor.
+© Todos los derechos reservados. Este código fuente es de carácter privado y propietario (**savage777js**), publicado únicamente para fines de inspección y visualización. Queda prohibida su copia, modificación, redistribución o uso comercial sin autorización expresa del autor.
